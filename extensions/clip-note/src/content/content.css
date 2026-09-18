@@ -103,3 +103,6 @@
   border-radius: 10px;
   letter-spacing: 0.5px;
 }
+
+.interactive-timestamp { cursor: pointer; color: #1a73e8; text-decoration: none; }
+.interactive-timestamp:hover { text-decoration: underline; }

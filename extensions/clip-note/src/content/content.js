@@ -198,9 +198,19 @@
     const seconds = time % 60;
     const timeStr = `${minutes}:${seconds.toString().padStart(2, '0')}`;
     
-    const timeSpan = document.createElement('span');
-    timeSpan.className = 'note-time';
+    const timeSpan = document.createElement('a');
+    timeSpan.className = 'note-time interactive-timestamp';
     timeSpan.textContent = `[${timeStr}]`;
+    timeSpan.href = 'javascript:void(0)';
+    timeSpan.addEventListener('click', (e) => {
+      e.preventDefault();
+      const video = document.querySelector('video');
+      if (video) {
+        video.currentTime = time;
+        video.play();
+      }
+    });
+
     note.appendChild(timeSpan);
     note.appendChild(document.createTextNode(` ${text}`));
     content.appendChild(note);

@@ -3,6 +3,8 @@ const cors = require('cors');
 require('dotenv').config();
 const { Pool } = require('pg');
 const crypto = require('crypto');
+const rateLimit = require('express-rate-limit');
+
 
 const app = express();
 const helmet = require('helmet');
@@ -15,6 +17,23 @@ app.use(express.json({
     req.rawBody = buf;
   }
 }));
+
+// Global Rate Limiter
+const globalLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 100,
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+app.use('/api/', globalLimiter);
+
+// Strict Rate Limiter
+const strictLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 10,
+  standardHeaders: true,
+  legacyHeaders: false,
+});
 
 // Database connection
 const pool = new Pool({
