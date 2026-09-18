@@ -6,3 +6,10 @@ CREATE TABLE IF NOT EXISTS licenses (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     expires_at TIMESTAMP
 );
+CREATE TABLE IF NOT EXISTS analytics_events (
+    id SERIAL PRIMARY KEY,
+    event_type VARCHAR(255) NOT NULL,
+    extension_id VARCHAR(255),
+    payload JSONB,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);

@@ -145,6 +145,24 @@ app.post('/api/webhooks/lemonsqueezy', strictLimiter, async (req, res) => {
   }
 });
 
+// Analytics Endpoint
+app.post('/api/analytics', async (req, res) => {
+  const { eventType, extensionId, payload } = req.body;
+  if (!eventType) {
+    return res.status(400).json({ success: false, error: 'eventType is required' });
+  }
+  try {
+    await pool.query(
+      'INSERT INTO analytics_events (event_type, extension_id, payload) VALUES ($1, $2, $3)',
+      [eventType, extensionId || null, payload || {}]
+    );
+    res.status(200).json({ success: true });
+  } catch (error) {
+    console.error('Error saving analytics event:', error);
+    res.status(500).json({ success: false, error: 'Internal server error' });
+  }
+});
+
 app.listen(PORT, () => {
   console.log(`🚀 Backend API running on http://localhost:${PORT}`);
 });
