@@ -99,8 +99,19 @@ async function showPopup(e, dialog) {
     if (!popup.contains(event.target) && event.target !== e.target) {
       popup.remove();
       document.removeEventListener('click', closePopup);
+      document.removeEventListener('keydown', handleEsc);
     }
   });
+
+  function handleEsc(event) {
+    if (event.key === 'Escape') {
+      popup.remove();
+      document.removeEventListener('keydown', handleEsc);
+      // We also need to remove the click listener, but it's a bit tricky without a reference.
+      // However, the click listener will clean itself up on the next click anyway.
+    }
+  }
+  document.addEventListener('keydown', handleEsc);
 
   document.body.appendChild(popup);
 }

@@ -36,7 +36,11 @@
     <section>
       <div style="display: flex; justify-content: space-between; align-items: center;">
         <h2>Saved Vaults</h2>
-        <button id="export-btn" style="padding: 4px 8px; cursor: pointer; font-size: 12px;">Export JSON</button>
+        <div>
+          <input type="file" id="import-file" style="display:none;" accept=".json">
+          <button id="import-btn" style="padding: 4px 8px; cursor: pointer; font-size: 12px; margin-right: 4px;">Import JSON</button>
+          <button id="export-btn" style="padding: 4px 8px; cursor: pointer; font-size: 12px;">Export JSON</button>
+        </div>
       </div>
       <ul id="saved-vaults-list"></ul>
     </section>
