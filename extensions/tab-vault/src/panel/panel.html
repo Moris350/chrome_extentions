@@ -14,6 +14,10 @@
   <main>
     <section>
       <h2>Current Tabs</h2>
+      <div style="display: flex; align-items: center; margin-bottom: 8px;">
+        <input type="checkbox" id="select-all-cb" checked>
+        <label for="select-all-cb" style="margin-left: 8px; font-size: 13px; cursor: pointer;">Select All / Deselect All</label>
+      </div>
       <button id="save-all-btn" style="width: 100%; margin-bottom: 12px; font-weight: 600;">Save Selected Tabs</button>
       <ul id="current-tabs-list"></ul>
     </section>

@@ -76,9 +76,24 @@ async function showPopup(e, dialog) {
         return;
       }
       
-      await incrementUsage();
-      insertGeneratedResponse(dialog, tone.name);
-      popup.remove();
+      const originalHTML = btn.innerHTML;
+      btn.innerHTML = `Generating...`;
+      btn.style.pointerEvents = 'none';
+      btn.style.opacity = '0.7';
+      
+      try {
+        await incrementUsage();
+        await insertGeneratedResponse(dialog, tone.name);
+        popup.remove();
+      } catch (e) {
+        console.error(e);
+        btn.innerHTML = `Error. Try again.`;
+        setTimeout(() => {
+          btn.innerHTML = originalHTML;
+          btn.style.pointerEvents = 'auto';
+          btn.style.opacity = '1';
+        }, 3000);
+      }
     };
     
     popup.appendChild(btn);
@@ -94,7 +109,7 @@ async function showPopup(e, dialog) {
   document.body.appendChild(popup);
 }
 
-function insertGeneratedResponse(dialog, tone) {
+async function insertGeneratedResponse(dialog, tone) {
   const editableBox = dialog.querySelector('div[role="textbox"][aria-label="Message Body"]') || 
                       dialog.querySelector('div[role="textbox"][g_editable="true"]') ||
                       dialog.querySelector('.Am.Al.editable');
@@ -107,8 +122,16 @@ function insertGeneratedResponse(dialog, tone) {
       'Witty': 'Challenge accepted! Let\'s do this.'
     };
     
+    // Simulate LLM API delay
+    await new Promise(resolve => setTimeout(resolve, 1500));
+    
+    const text = responses[tone];
+    if (!text) {
+      throw new Error('Empty AI response');
+    }
+    
     const newDiv = document.createElement('div');
-    newDiv.textContent = responses[tone] || 'Generating response...';
+    newDiv.textContent = text;
     const br = document.createElement('br');
     
     if (editableBox.firstChild) {
@@ -120,6 +143,8 @@ function insertGeneratedResponse(dialog, tone) {
     }
     
     editableBox.dispatchEvent(new Event('input', { bubbles: true }));
+  } else {
+    throw new Error('Compose box not found');
   }
 }
 

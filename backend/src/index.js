@@ -53,7 +53,7 @@ app.get('/api/health', (req, res) => {
 });
 
 // License Validation Endpoint
-app.post('/api/license/validate', async (req, res) => {
+app.post('/api/license/validate', strictLimiter, async (req, res) => {
   const { licenseKey, extensionId } = req.body;
   
   if (!licenseKey) {
@@ -91,7 +91,7 @@ app.post('/api/license/validate', async (req, res) => {
 });
 
 // Mock Lemonsqueezy Webhook Receiver
-app.post('/api/webhooks/lemonsqueezy', async (req, res) => {
+app.post('/api/webhooks/lemonsqueezy', strictLimiter, async (req, res) => {
   const signature = req.get('X-Signature');
   if (!signature) {
     return res.status(401).json({ success: false, error: 'Missing signature' });
