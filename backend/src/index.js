@@ -10,7 +10,11 @@ const PORT = process.env.PORT || 3000;
 
 app.use(helmet());
 app.use(cors());
-app.use(express.json());
+app.use(express.json({
+  verify: (req, res, buf) => {
+    req.rawBody = buf;
+  }
+}));
 
 // Database connection
 const pool = new Pool({
@@ -69,6 +73,24 @@ app.post('/api/license/validate', async (req, res) => {
 
 // Mock Lemonsqueezy Webhook Receiver
 app.post('/api/webhooks/lemonsqueezy', async (req, res) => {
+  const signature = req.get('X-Signature');
+  if (!signature) {
+    return res.status(401).json({ success: false, error: 'Missing signature' });
+  }
+
+  const webhookSecret = process.env.LEMON_SQUEEZY_WEBHOOK_SECRET || 'default_secret';
+  try {
+    const hmac = crypto.createHmac('sha256', webhookSecret);
+    const digest = Buffer.from(hmac.update(req.rawBody || '').digest('hex'), 'utf8');
+    const signatureBuffer = Buffer.from(signature, 'utf8');
+
+    if (digest.length !== signatureBuffer.length || !crypto.timingSafeEqual(digest, signatureBuffer)) {
+      return res.status(401).json({ success: false, error: 'Invalid signature' });
+    }
+  } catch (err) {
+    return res.status(401).json({ success: false, error: 'Signature verification failed' });
+  }
+
   const event = req.body;
 
   // Extract event name (supporting different payload structures)

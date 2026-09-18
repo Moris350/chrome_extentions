@@ -106,7 +106,19 @@ function insertGeneratedResponse(dialog, tone) {
       'Professional': 'Thank you for reaching out. I will review this and get back to you shortly.',
       'Witty': 'Challenge accepted! Let\'s do this.'
     };
-    editableBox.innerHTML = `<div>${responses[tone] || 'Generating response...'}</div><br>` + editableBox.innerHTML;
+    
+    const newDiv = document.createElement('div');
+    newDiv.textContent = responses[tone] || 'Generating response...';
+    const br = document.createElement('br');
+    
+    if (editableBox.firstChild) {
+      editableBox.insertBefore(br, editableBox.firstChild);
+      editableBox.insertBefore(newDiv, br);
+    } else {
+      editableBox.appendChild(newDiv);
+      editableBox.appendChild(br);
+    }
+    
     editableBox.dispatchEvent(new Event('input', { bubbles: true }));
   }
 }
