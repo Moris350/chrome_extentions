@@ -130,10 +130,15 @@ async function insertGeneratedResponse(dialog, tone) {
       'Witty': 'Challenge accepted! Let\'s do this.'
     };
     
+    // Extract received email language
+    const emailBodyNode = dialog.closest('.nH')?.querySelector('.a3s.aiL') || document.querySelector('.a3s.aiL');
+    const emailText = emailBodyNode ? emailBodyNode.innerText.substring(0, 100) : '';
+    const languagePrompt = `\n[AI Prompt: Detect the language of the following email and explicitly reply in the exact same language. Email text: "${emailText}"]`;
+
     // Simulate LLM API delay
     await new Promise(resolve => setTimeout(resolve, 1500));
     
-    let text = responses[tone];
+    let text = responses[tone] || 'Generating...';
     
     if (tone === 'Custom') {
       const data = await new Promise(resolve => chrome.storage.local.get(['customTone'], resolve));
@@ -141,6 +146,8 @@ async function insertGeneratedResponse(dialog, tone) {
       // Pass this custom context to the AI generation prompt
       text = `[Generated with custom tone: ${customTone}] Sounds great!`;
     }
+    
+    text += languagePrompt;
 
     if (!text) {
       throw new Error('Empty AI response');
