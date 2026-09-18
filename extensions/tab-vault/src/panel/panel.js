@@ -222,4 +222,35 @@ document.addEventListener('DOMContentLoaded', async () => {
       downloadAnchorNode.remove();
     });
   }
+
+  // Import functionality
+  const importBtn = document.getElementById('import-btn');
+  const importFile = document.getElementById('import-file');
+  if (importBtn && importFile) {
+    importBtn.addEventListener('click', () => {
+      importFile.click();
+    });
+    importFile.addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = async (event) => {
+        try {
+          const importedVaults = JSON.parse(event.target.result);
+          if (Array.isArray(importedVaults)) {
+            const result = await chrome.storage.local.get(['vaults']);
+            let vaults = result.vaults || [];
+            vaults = vaults.concat(importedVaults);
+            if (vaults.length > 100) vaults = vaults.slice(0, 100);
+            await chrome.storage.local.set({ vaults });
+            renderSavedVaults();
+            alert('Vaults imported successfully!');
+          }
+        } catch (err) {
+          alert('Failed to parse JSON file.');
+        }
+      };
+      reader.readAsText(file);
+    });
+  }
 });
