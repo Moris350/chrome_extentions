@@ -1,0 +1,16 @@
+{
+  "manifest_version": 3,
+  "name": "TabVault",
+  "version": "1.0.0",
+  "description": "Save and organize your tabs. Freemium model included.",
+  "permissions": ["tabGroups", "tabs", "storage", "sidePanel"],
+  "background": {
+    "service_worker": "src/background/background.js"
+  },
+  "side_panel": {
+    "default_path": "src/panel/panel.html"
+  },
+  "action": {
+    "default_title": "Open TabVault"
+  }
+}

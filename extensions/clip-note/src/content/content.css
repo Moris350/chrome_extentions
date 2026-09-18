@@ -1,0 +1,79 @@
+#clipnote-sidebar {
+  position: fixed;
+  top: 60px;
+  right: 0;
+  width: 350px;
+  height: calc(100vh - 60px);
+  background: white;
+  z-index: 9999;
+  box-shadow: -2px 0 5px rgba(0,0,0,0.1);
+  display: flex;
+  flex-direction: column;
+  font-family: Arial, sans-serif;
+  color: #333;
+}
+
+#clipnote-header {
+  padding: 15px;
+  background: #f1f1f1;
+  border-bottom: 1px solid #ccc;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+#clipnote-header h2 {
+  margin: 0;
+  font-size: 18px;
+}
+
+#clipnote-content {
+  flex: 1;
+  padding: 15px;
+  overflow-y: auto;
+}
+
+#clipnote-controls {
+  padding: 15px;
+  border-top: 1px solid #ccc;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.clipnote-btn {
+  padding: 10px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.btn-primary {
+  background: #ff0000;
+  color: white;
+}
+
+.btn-premium {
+  background: #f1c40f;
+  color: #333;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+}
+
+.note-item {
+  margin-bottom: 10px;
+  padding: 10px;
+  background: #f9f9f9;
+  border: 1px solid #eee;
+  border-radius: 4px;
+}
+
+.note-time {
+  color: #ff0000;
+  font-weight: bold;
+  cursor: pointer;
+}

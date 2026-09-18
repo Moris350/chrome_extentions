@@ -1,0 +1,43 @@
+version: '3.8'
+
+services:
+  backend-api:
+    build: 
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=development
+      - PORT=3000
+      - DB_HOST=postgres-db
+      - DB_USER=postgres
+      - DB_PASSWORD=extensions_secret_password
+      - DB_NAME=extensions_db
+    depends_on:
+      - postgres-db
+    networks:
+      - extension-network
+    volumes:
+      - ./backend:/app
+      - /app/node_modules
+
+  postgres-db:
+    image: postgres:15-alpine
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=extensions_secret_password
+      - POSTGRES_DB=extensions_db
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      - extension-network
+
+volumes:
+  pgdata:
+
+networks:
+  extension-network:
+    driver: bridge

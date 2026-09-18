@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>TabVault</title>
+  <link rel="stylesheet" href="panel.css">
+</head>
+<body>
+  <header>
+    <h1>TabVault</h1>
+    <div id="premium-status" class="status-badge">Checking...</div>
+  </header>
+  
+  <main>
+    <section>
+      <h2>Current Tabs</h2>
+      <button id="save-all-btn">Save All Tabs</button>
+      <ul id="current-tabs-list"></ul>
+    </section>
+
+    <section class="premium-feature">
+      <h2>Auto-Sync & Backups 👑</h2>
+      <p>Premium features for $1.99/mo</p>
+      <div class="overlay" id="premium-overlay">
+        <button id="upgrade-btn">Upgrade Now</button>
+      </div>
+      <label>
+        <input type="checkbox" id="auto-sync-cb" disabled> Enable Auto-Sync
+      </label>
+    </section>
+
+    <section>
+      <h2>Saved Vaults</h2>
+      <ul id="saved-vaults-list"></ul>
+    </section>
+  </main>
+
+  <script type="module" src="panel.js"></script>
+</body>
+</html>

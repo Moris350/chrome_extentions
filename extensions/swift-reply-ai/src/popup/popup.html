@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>SwiftReply AI</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="container">
+    <h2>SwiftReply AI</h2>
+    <div id="status-box">
+      <p>Status: <span id="status-text">Loading...</span></p>
+      <p id="usage-text"></p>
+    </div>
+    
+    <div id="upgrade-section" class="hidden">
+      <p>Unlock unlimited replies and advanced tones!</p>
+      <button id="upgrade-btn">Upgrade to Premium ($2.99/mo)</button>
+    </div>
+    
+    <div id="premium-section" class="hidden">
+      <p>✨ Thanks for being a Premium user!</p>
+      <button id="reset-btn">Reset (Dev)</button>
+    </div>
+  </div>
+  
+  <script src="../shared/license.js"></script>
+  <script src="popup.js"></script>
+</body>
+</html>

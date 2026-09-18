@@ -1,0 +1,27 @@
+{
+  "manifest_version": 3,
+  "name": "ClipNote for YouTube",
+  "version": "1.0.0",
+  "description": "Take timestamped notes and screenshots on YouTube videos.",
+  "permissions": [
+    "storage",
+    "activeTab",
+    "scripting"
+  ],
+  "host_permissions": [
+    "*://*.youtube.com/*"
+  ],
+  "background": {
+    "service_worker": "src/background/background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["*://*.youtube.com/watch*"],
+      "js": ["src/shared/license.js", "src/content/content.js"],
+      "css": ["src/content/content.css"]
+    }
+  ],
+  "action": {
+    "default_title": "ClipNote"
+  }
+}
