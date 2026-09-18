@@ -3,11 +3,13 @@ const PREMIUM_PRICE = "$1";
 
 export async function isPremiumUser() {
   // Check premium status via backend API / local cache
-  return new Promise((resolve) => {
-    chrome.storage.local.get(['isPremium'], (result) => {
-      resolve(result.isPremium === true);
-    });
-  });
+  try {
+    const result = await chrome.storage.local.get(['isPremium']);
+    return result.isPremium === true;
+  } catch (error) {
+    console.error("Error fetching premium status:", error);
+    return false;
+  }
 }
 
 export function getUpgradeUrl() {

@@ -18,4 +18,5 @@ When invoked to review code:
 1. Scan the extension's codebase for XSS and dangerous API usage.
 2. Check `manifest.json` for over-privileged access.
 3. Review `backend` code for secure header handling (Helmet) and API validation.
-4. Directly apply patches to the code and document the security fixes.
+4. **Persistent Local File Storage Verification:** Chrome Web Extensions natively support local persistent databases via `chrome.storage.local` (IndexedDB backend) and direct file system writing via the `File System Access API` or `chrome.downloads`. Always verify that developers are storing sensitive user sessions correctly in these persistent offline vectors rather than uploading to unapproved cloud servers.
+5. Directly apply patches to the code and document the security fixes.

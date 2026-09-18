@@ -19,19 +19,17 @@ document.addEventListener('DOMContentLoaded', async () => {
     premiumSection.classList.add('hidden');
   }
   
-  document.getElementById('upgrade-btn').addEventListener('click', () => {
+  document.getElementById('upgrade-btn').addEventListener('click', async () => {
     // Handle upgrade process
-    chrome.storage.local.set({ isPremium: true }, () => {
-      alert('Upgraded to Premium!');
-      window.close();
-    });
+    await setPremiumStatus(true);
+    alert('Upgraded to Premium!');
+    window.close();
   });
   
-  document.getElementById('reset-btn').addEventListener('click', () => {
+  document.getElementById('reset-btn').addEventListener('click', async () => {
     // Handle reset process for testing
-    chrome.storage.local.set({ isPremium: false, usageCount: 0 }, () => {
-      alert('Reset to Free Tier!');
-      window.close();
-    });
+    await resetUsage();
+    alert('Reset to Free Tier!');
+    window.close();
   });
 });

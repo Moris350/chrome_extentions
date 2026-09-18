@@ -1,25 +1,36 @@
 // Inject Smart Reply button into Gmail Compose window
 function injectButton() {
-  const composeWindows = document.querySelectorAll('.aDh'); // Gmail compose bottom bar container
-  composeWindows.forEach((composeWindow) => {
-    if (!composeWindow.querySelector('.swift-reply-btn')) {
+  const dialogs = document.querySelectorAll('div[role="dialog"]');
+  dialogs.forEach((dialog) => {
+    if (dialog.querySelector('.swift-reply-btn')) return;
+
+    let toolbar = dialog.querySelector('.btC') || dialog.querySelector('.aDh');
+    if (!toolbar) {
+      const sendBtn = dialog.querySelector('[role="button"][data-tooltip^="Send"]');
+      if (sendBtn) {
+        toolbar = sendBtn.closest('tr') || sendBtn.parentElement;
+      }
+    }
+
+    if (toolbar) {
       const btn = document.createElement('button');
       btn.className = 'swift-reply-btn';
       btn.innerText = 'Smart Reply';
-      btn.onclick = (e) => showPopup(e, composeWindow);
+      btn.onclick = (e) => showPopup(e, dialog);
       
-      const toolbar = composeWindow.querySelector('.gU.Up'); // Toolbar inside compose
-      if (toolbar) {
+      const innerToolbar = toolbar.querySelector('.gU.Up') || toolbar;
+      if (innerToolbar) {
+        innerToolbar.prepend(btn);
+      } else {
         toolbar.prepend(btn);
       }
     }
   });
 }
 
-async function showPopup(e, composeWindow) {
+async function showPopup(e, dialog) {
   e.preventDefault();
   
-  // Remove existing popup if any
   const existing = document.querySelector('.swift-reply-popup');
   if (existing) existing.remove();
 
@@ -28,10 +39,9 @@ async function showPopup(e, composeWindow) {
   const popup = document.createElement('div');
   popup.className = 'swift-reply-popup';
   
-  // Position near the button
   const rect = e.target.getBoundingClientRect();
-  popup.style.top = `${rect.top - 150}px`;
-  popup.style.left = `${rect.left}px`;
+  popup.style.top = `${rect.top + window.scrollY - 150}px`;
+  popup.style.left = `${rect.left + window.scrollX}px`;
 
   const tones = [
     { name: 'Agree', premium: false },
@@ -57,24 +67,23 @@ async function showPopup(e, composeWindow) {
     
     btn.onclick = async () => {
       if (tone.premium && !status.isPremium) {
-        alert(`Upgrade to Premium for $2.99/mo to unlock ${tone.name} tone!`);
+        alert(`Upgrade to Premium for $1 Lifetime to unlock ${tone.name} tone!`);
         return;
       }
       
       if (!status.canUse) {
-        alert('Free limit reached! Upgrade to Premium for $2.99/mo for unlimited replies.');
+        alert('Free limit reached! Upgrade to Premium for $1 Lifetime for unlimited replies.');
         return;
       }
       
       await incrementUsage();
-      insertGeneratedResponse(composeWindow, tone.name);
+      insertGeneratedResponse(dialog, tone.name);
       popup.remove();
     };
     
     popup.appendChild(btn);
   });
 
-  // Close when clicking outside
   document.addEventListener('click', function closePopup(event) {
     if (!popup.contains(event.target) && event.target !== e.target) {
       popup.remove();
@@ -85,8 +94,10 @@ async function showPopup(e, composeWindow) {
   document.body.appendChild(popup);
 }
 
-function insertGeneratedResponse(composeWindow, tone) {
-  const editableBox = composeWindow.closest('table').parentNode.querySelector('div[contenteditable="true"]');
+function insertGeneratedResponse(dialog, tone) {
+  const editableBox = dialog.querySelector('div[role="textbox"][aria-label="Message Body"]') || 
+                      dialog.querySelector('div[role="textbox"][g_editable="true"]') ||
+                      dialog.querySelector('.Am.Al.editable');
   if (editableBox) {
     const responses = {
       'Agree': 'Sounds great to me. I agree.',
@@ -96,9 +107,16 @@ function insertGeneratedResponse(composeWindow, tone) {
       'Witty': 'Challenge accepted! Let\'s do this.'
     };
     editableBox.innerHTML = `<div>${responses[tone] || 'Generating response...'}</div><br>` + editableBox.innerHTML;
+    editableBox.dispatchEvent(new Event('input', { bubbles: true }));
   }
 }
 
-// Observe DOM for compose window
-const observer = new MutationObserver(injectButton);
+let debounceTimer;
+const observer = new MutationObserver((mutations) => {
+  const hasAddedNodes = mutations.some(m => m.addedNodes.length > 0);
+  if (hasAddedNodes) {
+    clearTimeout(debounceTimer);
+    debounceTimer = setTimeout(injectButton, 250);
+  }
+});
 observer.observe(document.body, { childList: true, subtree: true });
