@@ -118,3 +118,23 @@ li {
   border-radius: 10px;
   letter-spacing: 0.5px;
 }
+@media (prefers-color-scheme: dark) {
+  body {
+    background-color: #0f172a;
+    color: #f8fafc;
+  }
+  h1, .premium-feature h2 {
+    color: #f8fafc;
+  }
+  li, .premium-feature {
+    background: #1e293b;
+    border-color: #334155;
+  }
+  .status-badge {
+    background-color: #334155;
+    color: #cbd5e1;
+  }
+  .overlay {
+    background: rgba(15, 23, 42, 0.9);
+  }
+}
