@@ -5,20 +5,41 @@
     const sidebar = document.createElement('div');
     sidebar.id = 'clipnote-sidebar';
     
-    sidebar.innerHTML = `
-      <div id="clipnote-header">
-        <h2>ClipNote</h2>
-        <button id="clipnote-close">X</button>
-      </div>
-      <div id="clipnote-content">
-        <!-- Notes will appear here -->
-      </div>
-      <div id="clipnote-controls">
-        <textarea id="clipnote-input" placeholder="Take a note at current time..." rows="3"></textarea>
-        <button id="clipnote-add" class="clipnote-btn btn-primary">Add Note @ Timestamp</button>
-        <button id="clipnote-sync" class="clipnote-btn btn-premium">👑 Sync to Notion (Premium)</button>
-      </div>
-    `;
+    const header = document.createElement('div');
+    header.id = 'clipnote-header';
+    const h2 = document.createElement('h2');
+    h2.textContent = 'ClipNote';
+    const closeBtn = document.createElement('button');
+    closeBtn.id = 'clipnote-close';
+    closeBtn.textContent = 'X';
+    header.appendChild(h2);
+    header.appendChild(closeBtn);
+
+    const content = document.createElement('div');
+    content.id = 'clipnote-content';
+
+    const controls = document.createElement('div');
+    controls.id = 'clipnote-controls';
+    const input = document.createElement('textarea');
+    input.id = 'clipnote-input';
+    input.placeholder = 'Take a note at current time...';
+    input.rows = 3;
+    const addBtn = document.createElement('button');
+    addBtn.id = 'clipnote-add';
+    addBtn.className = 'clipnote-btn btn-primary';
+    addBtn.textContent = 'Add Note @ Timestamp';
+    const syncBtn = document.createElement('button');
+    syncBtn.id = 'clipnote-sync';
+    syncBtn.className = 'clipnote-btn btn-premium';
+    syncBtn.textContent = '👑 Sync to Notion (Premium)';
+    
+    controls.appendChild(input);
+    controls.appendChild(addBtn);
+    controls.appendChild(syncBtn);
+
+    sidebar.appendChild(header);
+    sidebar.appendChild(content);
+    sidebar.appendChild(controls);
 
     document.body.appendChild(sidebar);
 
@@ -40,7 +61,11 @@
       const seconds = time % 60;
       const timeStr = `${minutes}:${seconds.toString().padStart(2, '0')}`;
       
-      note.innerHTML = `<span class="note-time">[${timeStr}]</span> ${text}`;
+      const timeSpan = document.createElement('span');
+      timeSpan.className = 'note-time';
+      timeSpan.textContent = `[${timeStr}]`;
+      note.appendChild(timeSpan);
+      note.appendChild(document.createTextNode(` ${text}`));
       content.appendChild(note);
       document.getElementById('clipnote-input').value = '';
     });

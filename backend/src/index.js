@@ -3,8 +3,10 @@ const cors = require('cors');
 require('dotenv').config();
 
 const app = express();
+const helmet = require('helmet');
 const PORT = process.env.PORT || 3000;
 
+app.use(helmet());
 app.use(cors());
 app.use(express.json());
 

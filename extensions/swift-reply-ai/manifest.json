@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
-  "name": "SwiftReply AI",
+  "name": "SwiftReply",
   "version": "1.0.0",
-  "description": "AI-powered email replies in Gmail.",
+  "description": "Smart email replies in Gmail.",
   "permissions": [
     "activeTab",
     "storage",
@@ -20,5 +20,8 @@
       "css": ["src/content/content.css"],
       "js": ["src/shared/license.js", "src/content/content.js"]
     }
-  ]
+  ],
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; object-src 'self';"
+  }
 }

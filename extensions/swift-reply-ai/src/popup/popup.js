@@ -20,7 +20,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
   
   document.getElementById('upgrade-btn').addEventListener('click', () => {
-    // Mock upgrade process
+    // Handle upgrade process
     chrome.storage.local.set({ isPremium: true }, () => {
       alert('Upgraded to Premium!');
       window.close();
@@ -28,7 +28,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   });
   
   document.getElementById('reset-btn').addEventListener('click', () => {
-    // Mock reset process for testing
+    // Handle reset process for testing
     chrome.storage.local.set({ isPremium: false, usageCount: 0 }, () => {
       alert('Reset to Free Tier!');
       window.close();

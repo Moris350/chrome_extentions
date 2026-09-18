@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   // Check premium status
   const premium = await isPremiumUser();
   if (premium) {
-    premiumStatus.textContent = 'Premium 👑';
+    premiumStatus.textContent = 'Premium';
     premiumStatus.classList.add('premium');
     premiumOverlay.classList.add('hidden');
     autoSyncCb.disabled = false;
@@ -52,7 +52,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   function renderSavedVaults() {
     chrome.storage.local.get(['vaults'], (result) => {
-      savedVaultsList.innerHTML = '';
+      savedVaultsList.textContent = '';
       const vaults = result.vaults || [];
       vaults.forEach(v => {
         const li = document.createElement('li');
