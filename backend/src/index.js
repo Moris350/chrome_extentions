@@ -50,8 +50,23 @@ pool.on('error', (err, client) => {
 });
 
 // Health check endpoint
-app.get('/api/health', (req, res) => {
-  res.json({ status: 'ok', message: 'Chrome Extensions Backend is running' });
+app.get('/api/health', async (req, res) => {
+  try {
+    await pool.query('SELECT 1');
+    res.json({
+      status: 'ok',
+      message: 'Chrome Extensions Backend is running',
+      uptime: process.uptime(),
+      database: 'connected'
+    });
+  } catch (error) {
+    res.status(503).json({
+      status: 'error',
+      message: 'Service Unavailable',
+      uptime: process.uptime(),
+      database: 'disconnected'
+    });
+  }
 });
 
 // License Validation Endpoint

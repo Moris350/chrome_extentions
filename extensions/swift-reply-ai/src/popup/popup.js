@@ -41,7 +41,12 @@ document.addEventListener('DOMContentLoaded', async () => {
   });
 
   document.getElementById('save-tone-btn').addEventListener('click', () => {
-    const tone = customToneInput.value;
+    let tone = customToneInput.value;
+    
+    // Sanitize and limit length
+    tone = tone.substring(0, 100); 
+    tone = tone.replace(/</g, "&lt;").replace(/>/g, "&gt;");
+    
     chrome.storage.local.set({ customTone: tone }, () => {
       alert('Custom tone saved!');
     });
