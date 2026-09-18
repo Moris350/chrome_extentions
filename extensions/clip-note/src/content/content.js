@@ -152,6 +152,43 @@
       document.getElementById('clipnote-input').value = '';
     });
 
+    document.getElementById('clipnote-screenshot').addEventListener('click', async () => {
+      const isPremium = window.ClipNoteLicense && await window.ClipNoteLicense.checkPremiumStatus();
+      
+      chrome.storage.sync.get(['screenshotCount'], (result) => {
+        let count = result.screenshotCount || 0;
+        if (!isPremium && count >= 15) {
+          showToast('Screenshot limit reached for Free tier (15). Upgrade to Premium!', 'error');
+          return;
+        }
+
+        const video = document.querySelector('video');
+        if (!video) {
+          showToast('No video found to capture.', 'error');
+          return;
+        }
+
+        const canvas = document.createElement('canvas');
+        canvas.width = video.videoWidth || video.clientWidth;
+        canvas.height = video.videoHeight || video.clientHeight;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+        
+        try {
+          const dataURI = canvas.toDataURL('image/png');
+          const time = Math.floor(video.currentTime);
+          
+          addNoteToUI(time, `*Screenshot captured*`, dataURI);
+          
+          chrome.storage.sync.set({ screenshotCount: count + 1 });
+          showToast('Screenshot saved!', 'success');
+        } catch (e) {
+          console.error(e);
+          showToast('Failed to capture screenshot. (CORS?)', 'error');
+        }
+      });
+    });
+
     document.getElementById('clipnote-summarize').addEventListener('click', async () => {
       const video = document.querySelector('video');
       const time = video ? Math.floor(video.currentTime) : 0;

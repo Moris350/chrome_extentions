@@ -14,6 +14,7 @@ app.set('trust proxy', 1);
 app.use(helmet());
 app.use(cors());
 app.use(express.json({
+  limit: '10kb',
   verify: (req, res, buf) => {
     req.rawBody = buf;
   }
@@ -146,7 +147,7 @@ app.post('/api/webhooks/lemonsqueezy', strictLimiter, async (req, res) => {
 });
 
 // Analytics Endpoint
-app.post('/api/analytics', async (req, res) => {
+app.post('/api/analytics', strictLimiter, async (req, res) => {
   const { eventType, extensionId, payload } = req.body;
   if (!eventType) {
     return res.status(400).json({ success: false, error: 'eventType is required' });

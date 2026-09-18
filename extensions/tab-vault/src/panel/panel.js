@@ -210,8 +210,12 @@ document.addEventListener('DOMContentLoaded', async () => {
   
   const searchInput = document.getElementById('search-vaults-input');
   if (searchInput) {
+    let debounceTimer;
     searchInput.addEventListener('input', () => {
-      renderSavedVaults();
+      clearTimeout(debounceTimer);
+      debounceTimer = setTimeout(() => {
+        renderSavedVaults();
+      }, 300);
     });
   }
   
