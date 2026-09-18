@@ -162,15 +162,15 @@
           return;
         }
 
-        const video = document.querySelector('video');
-        if (!video) {
-          showToast('No video found to capture.', 'error');
+        const video = document.querySelector('.html5-main-video') || document.querySelector('video');
+        if (!video || video.videoWidth === 0 || video.videoHeight === 0) {
+          showToast('No video playing to capture.', 'error');
           return;
         }
 
         const canvas = document.createElement('canvas');
-        canvas.width = video.videoWidth || video.clientWidth;
-        canvas.height = video.videoHeight || video.clientHeight;
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
         const ctx = canvas.getContext('2d');
         ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
         

@@ -182,6 +182,30 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
         btnContainer.appendChild(restoreBtn);
 
+        // Copy Links Button
+        const copyBtn = document.createElement('button');
+        copyBtn.textContent = 'Copy Links';
+        copyBtn.style.marginRight = '8px';
+        copyBtn.style.cursor = 'pointer';
+        copyBtn.style.backgroundColor = 'transparent';
+        copyBtn.style.color = '#3b82f6';
+        copyBtn.style.border = '1px solid #93c5fd';
+        copyBtn.addEventListener('click', async () => {
+          const linksText = v.tabs.map(t => `${t.title || 'Untitled'}\n${t.url}`).join('\n\n');
+          try {
+            await navigator.clipboard.writeText(linksText);
+            const originalText = copyBtn.textContent;
+            copyBtn.textContent = 'Copied!';
+            setTimeout(() => {
+              copyBtn.textContent = originalText;
+            }, 2000);
+          } catch (err) {
+            console.error('Failed to copy links:', err);
+            alert('Failed to copy links.');
+          }
+        });
+        btnContainer.appendChild(copyBtn);
+
         // Delete Button
         const deleteBtn = document.createElement('button');
         deleteBtn.textContent = 'Delete';
