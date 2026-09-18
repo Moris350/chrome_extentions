@@ -32,4 +32,18 @@ document.addEventListener('DOMContentLoaded', async () => {
     alert('Reset to Free Tier!');
     window.close();
   });
+
+  const customToneInput = document.getElementById('custom-tone-input');
+  chrome.storage.local.get(['customTone'], (result) => {
+    if (result.customTone) {
+      customToneInput.value = result.customTone;
+    }
+  });
+
+  document.getElementById('save-tone-btn').addEventListener('click', () => {
+    const tone = customToneInput.value;
+    chrome.storage.local.set({ customTone: tone }, () => {
+      alert('Custom tone saved!');
+    });
+  });
 });

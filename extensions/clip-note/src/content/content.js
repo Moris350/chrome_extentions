@@ -218,21 +218,21 @@
       
       const notes = result[currentVideoId] || [];
       notes.forEach(note => {
-        addNoteToUIDom(note.time, note.text);
+        addNoteToUIDom(note.time, note.text, note.image);
       });
     });
   }
 
-  function saveNote(time, text) {
+  function saveNote(time, text, image = null) {
     if (!currentVideoId) return;
     chrome.storage.local.get([currentVideoId], (result) => {
       const notes = result[currentVideoId] || [];
-      notes.push({ time, text });
+      notes.push({ time, text, image });
       chrome.storage.local.set({ [currentVideoId]: notes });
     });
   }
 
-  function addNoteToUIDom(time, text) {
+  function addNoteToUIDom(time, text, image = null) {
     const content = document.getElementById('clipnote-content');
     if (!content) return;
     const note = document.createElement('div');
@@ -260,12 +260,23 @@
 
     note.appendChild(timeSpan);
     note.appendChild(textSpan);
+    
+    if (image) {
+      const img = document.createElement('img');
+      img.src = image;
+      img.style.width = '100%';
+      img.style.marginTop = '8px';
+      img.style.borderRadius = '4px';
+      img.className = 'note-image';
+      note.appendChild(img);
+    }
+    
     content.appendChild(note);
   }
 
-  function addNoteToUI(time, text) {
-    addNoteToUIDom(time, text);
-    saveNote(time, text);
+  function addNoteToUI(time, text, image = null) {
+    addNoteToUIDom(time, text, image);
+    saveNote(time, text, image);
   }
 
   function injectSidebar() {

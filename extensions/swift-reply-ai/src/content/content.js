@@ -44,7 +44,8 @@ async function showPopup(e, dialog) {
     { name: 'Decline', premium: false },
     { name: 'Short', premium: false },
     { name: 'Professional', premium: true },
-    { name: 'Witty', premium: true }
+    { name: 'Witty', premium: true },
+    { name: 'Custom', premium: true }
   ];
 
   const header = document.createElement('div');
@@ -132,7 +133,15 @@ async function insertGeneratedResponse(dialog, tone) {
     // Simulate LLM API delay
     await new Promise(resolve => setTimeout(resolve, 1500));
     
-    const text = responses[tone];
+    let text = responses[tone];
+    
+    if (tone === 'Custom') {
+      const data = await new Promise(resolve => chrome.storage.local.get(['customTone'], resolve));
+      const customTone = data.customTone || 'default';
+      // Pass this custom context to the AI generation prompt
+      text = `[Generated with custom tone: ${customTone}] Sounds great!`;
+    }
+
     if (!text) {
       throw new Error('Empty AI response');
     }
