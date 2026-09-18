@@ -159,8 +159,38 @@
     });
   }
 
-  function addNoteToUI(time, text) {
+  let currentVideoId = null;
+
+  function getVideoId() {
+    const urlParams = new URLSearchParams(window.location.search);
+    return urlParams.get('v');
+  }
+
+  function loadNotes() {
+    if (!currentVideoId) return;
     const content = document.getElementById('clipnote-content');
+    if (content) content.innerHTML = '';
+    
+    chrome.storage.local.get([currentVideoId], (result) => {
+      const notes = result[currentVideoId] || [];
+      notes.forEach(note => {
+        addNoteToUIDom(note.time, note.text);
+      });
+    });
+  }
+
+  function saveNote(time, text) {
+    if (!currentVideoId) return;
+    chrome.storage.local.get([currentVideoId], (result) => {
+      const notes = result[currentVideoId] || [];
+      notes.push({ time, text });
+      chrome.storage.local.set({ [currentVideoId]: notes });
+    });
+  }
+
+  function addNoteToUIDom(time, text) {
+    const content = document.getElementById('clipnote-content');
+    if (!content) return;
     const note = document.createElement('div');
     note.className = 'note-item';
     
@@ -176,18 +206,40 @@
     content.appendChild(note);
   }
 
+  function addNoteToUI(time, text) {
+    addNoteToUIDom(time, text);
+    saveNote(time, text);
+  }
+
   function injectSidebar() {
     const checkInterval = setInterval(() => {
-      if (document.querySelector('ytd-watch-flexy')) {
+      const container = document.querySelector('ytd-watch-flexy') || document.body;
+      if (container) {
         clearInterval(checkInterval);
-        createSidebar();
+        if (!document.getElementById('clipnote-sidebar')) {
+          createSidebar();
+        }
+        loadNotes();
       }
     }, 500);
   }
 
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', injectSidebar);
-  } else {
-    injectSidebar();
+  function handleNavigation() {
+    const newVideoId = getVideoId();
+    if (newVideoId && newVideoId !== currentVideoId) {
+      currentVideoId = newVideoId;
+      injectSidebar();
+      const sidebar = document.getElementById('clipnote-sidebar');
+      if (sidebar) sidebar.style.display = 'block';
+    } else if (!newVideoId) {
+      currentVideoId = null;
+      const sidebar = document.getElementById('clipnote-sidebar');
+      if (sidebar) sidebar.style.display = 'none';
+    }
   }
+
+  document.addEventListener('yt-navigate-finish', handleNavigation);
+
+  // Initialize
+  handleNavigation();
 })();
