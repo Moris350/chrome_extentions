@@ -125,8 +125,28 @@ function insertGeneratedResponse(dialog, tone) {
 
 let debounceTimer;
 const observer = new MutationObserver((mutations) => {
-  const hasAddedNodes = mutations.some(m => m.addedNodes.length > 0);
-  if (hasAddedNodes) {
+  let shouldInject = false;
+  for (const m of mutations) {
+    if (m.target && m.target.nodeType === Node.ELEMENT_NODE) {
+      if (m.target.getAttribute('role') === 'dialog' || m.target.closest('div[role="dialog"]')) {
+        shouldInject = true;
+        break;
+      }
+      // Also check if a dialog was just added
+      if (!shouldInject && m.addedNodes.length > 0) {
+        for (const node of m.addedNodes) {
+          if (node.nodeType === Node.ELEMENT_NODE && 
+              (node.getAttribute('role') === 'dialog' || node.querySelector('div[role="dialog"]'))) {
+            shouldInject = true;
+            break;
+          }
+        }
+      }
+    }
+    if (shouldInject) break;
+  }
+  
+  if (shouldInject) {
     clearTimeout(debounceTimer);
     debounceTimer = setTimeout(injectButton, 250);
   }
