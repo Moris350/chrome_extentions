@@ -4,7 +4,7 @@ const ClipNoteLicense = {
     screenshots: 15
   },
   PREMIUM: {
-    price: '$2',
+    price: '$1',
     features: ['Notion Sync', 'Unlimited Screenshots']
   },
   async checkPremiumStatus() {
