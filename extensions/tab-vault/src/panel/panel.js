@@ -60,6 +60,16 @@ document.addEventListener('DOMContentLoaded', async () => {
   };
   await renderCurrentTabs();
 
+  const selectAllCb = document.getElementById('select-all-cb');
+  if (selectAllCb) {
+    selectAllCb.addEventListener('change', (e) => {
+      const checkboxes = currentTabsList.querySelectorAll('input[type="checkbox"]');
+      checkboxes.forEach(cb => {
+        cb.checked = e.target.checked;
+      });
+    });
+  }
+
   // Save SELECTED tabs
   saveBtn.addEventListener('click', async () => {
     try {
