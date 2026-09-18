@@ -4,6 +4,13 @@
   <meta charset="UTF-8">
   <title>TabVault</title>
   <link rel="stylesheet" href="panel.css">
+  <style>
+    ul { list-style: none; padding: 0; }
+    button { padding: 5px 10px; border-radius: 4px; border: 1px solid #ccc; background: white; }
+    button:hover { background: #f0f0f0; }
+    #save-all-btn { background: #3b82f6; color: white; border: none; padding: 8px 16px; margin-bottom: 10px; cursor: pointer; border-radius: 6px; font-weight: bold; width: 100%; }
+    #save-all-btn:hover { background: #2563eb; }
+  </style>
 </head>
 <body>
   <header>
@@ -14,18 +21,18 @@
   <main>
     <section>
       <h2>Current Tabs</h2>
-      <button id="save-all-btn">Save All Tabs</button>
+      <button id="save-all-btn">Save Selected Tabs</button>
       <ul id="current-tabs-list"></ul>
     </section>
 
     <section class="premium-feature">
-      <h2>Auto-Sync & Backups <span class="badge-pro">PRO</span></h2>
-      <p>Premium features for $1.99/mo</p>
+      <h2>RAM Optimizer <span class="badge-pro">PRO</span></h2>
+      <p>Premium features for $1 Lifetime</p>
       <div class="overlay" id="premium-overlay">
         <button id="upgrade-btn">Upgrade Now</button>
       </div>
       <label>
-        <input type="checkbox" id="auto-sync-cb" disabled> Enable Auto-Sync
+        <input type="checkbox" id="auto-sync-cb" disabled> Enable RAM Optimization
       </label>
     </section>
 

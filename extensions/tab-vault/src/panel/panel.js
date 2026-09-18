@@ -3,11 +3,13 @@ import { isPremiumUser, getUpgradeUrl } from '../shared/license.js';
 document.addEventListener('DOMContentLoaded', async () => {
   const currentTabsList = document.getElementById('current-tabs-list');
   const savedVaultsList = document.getElementById('saved-vaults-list');
-  const saveAllBtn = document.getElementById('save-all-btn');
+  const saveBtn = document.getElementById('save-all-btn');
   const premiumStatus = document.getElementById('premium-status');
   const premiumOverlay = document.getElementById('premium-overlay');
   const autoSyncCb = document.getElementById('auto-sync-cb');
   const upgradeBtn = document.getElementById('upgrade-btn');
+
+  let activeTabs = [];
 
   // Check premium status
   const premium = await isPremiumUser();
@@ -24,14 +26,32 @@ document.addEventListener('DOMContentLoaded', async () => {
     chrome.tabs.create({ url: getUpgradeUrl() });
   });
 
-  // Load current tabs
+  // Load current tabs with checkboxes
   const renderCurrentTabs = async () => {
     try {
       currentTabsList.textContent = '';
-      const tabs = await chrome.tabs.query({ currentWindow: true });
-      tabs.forEach(tab => {
+      activeTabs = await chrome.tabs.query({ currentWindow: true });
+      activeTabs.forEach((tab, index) => {
         const li = document.createElement('li');
-        li.textContent = tab.title || tab.url;
+        li.style.display = 'flex';
+        li.style.alignItems = 'center';
+        li.style.marginBottom = '5px';
+        
+        const cb = document.createElement('input');
+        cb.type = 'checkbox';
+        cb.checked = true;
+        cb.dataset.index = index;
+        cb.style.marginRight = '8px';
+        
+        const span = document.createElement('span');
+        span.textContent = tab.title || tab.url;
+        span.style.overflow = 'hidden';
+        span.style.textOverflow = 'ellipsis';
+        span.style.whiteSpace = 'nowrap';
+        span.style.maxWidth = '250px';
+
+        li.appendChild(cb);
+        li.appendChild(span);
         currentTabsList.appendChild(li);
       });
     } catch (err) {
@@ -40,11 +60,21 @@ document.addEventListener('DOMContentLoaded', async () => {
   };
   await renderCurrentTabs();
 
-  // Save all tabs
-  saveAllBtn.addEventListener('click', async () => {
+  // Save SELECTED tabs
+  saveBtn.addEventListener('click', async () => {
     try {
-      const tabs = await chrome.tabs.query({ currentWindow: true });
-      const tabsToSave = tabs.map(t => ({ title: t.title, url: t.url }));
+      const checkboxes = currentTabsList.querySelectorAll('input[type="checkbox"]:checked');
+      if (checkboxes.length === 0) {
+        alert("Please select at least one tab to save.");
+        return;
+      }
+
+      const tabsToSave = [];
+      checkboxes.forEach(cb => {
+        const tab = activeTabs[cb.dataset.index];
+        tabsToSave.push({ title: tab.title, url: tab.url });
+      });
+
       const vault = {
         id: Date.now().toString(),
         date: new Date().toISOString(),
@@ -54,9 +84,9 @@ document.addEventListener('DOMContentLoaded', async () => {
       const result = await chrome.storage.local.get(['vaults']);
       const vaults = result.vaults || [];
       
-      // Prevent free users from saving more than 1 vault (Pricing loophole fix)
-      if (!premium && vaults.length >= 1) {
-        alert("Free users can only save 1 vault. Please upgrade to Premium!");
+      // Limit free users to 3 vaults
+      if (!premium && vaults.length >= 3) {
+        alert("Free users can only save up to 3 vaults. Please upgrade to Premium!");
         return;
       }
 
@@ -76,33 +106,49 @@ document.addEventListener('DOMContentLoaded', async () => {
       
       vaults.forEach((v, index) => {
         const li = document.createElement('li');
-        li.style.marginBottom = '10px';
+        li.style.marginBottom = '12px';
+        li.style.padding = '10px';
+        li.style.backgroundColor = '#f8fafc';
+        li.style.borderRadius = '8px';
+        li.style.border = '1px solid #e2e8f0';
         
-        const titleSpan = document.createElement('span');
-        titleSpan.textContent = `Vault (${new Date(v.date).toLocaleString()}): ${v.tabs.length} tabs `;
-        li.appendChild(titleSpan);
+        const titleDiv = document.createElement('div');
+        titleDiv.textContent = `Vault (${new Date(v.date).toLocaleString()}) - ${v.tabs.length} tabs`;
+        titleDiv.style.fontWeight = 'bold';
+        titleDiv.style.marginBottom = '8px';
+        li.appendChild(titleDiv);
 
+        const btnContainer = document.createElement('div');
+        
         // Restore Button
         const restoreBtn = document.createElement('button');
-        restoreBtn.textContent = 'Restore';
-        restoreBtn.style.marginRight = '5px';
+        restoreBtn.textContent = '📂 Restore';
+        restoreBtn.style.marginRight = '8px';
+        restoreBtn.style.cursor = 'pointer';
         restoreBtn.addEventListener('click', () => {
           v.tabs.forEach(tab => {
             chrome.tabs.create({ url: tab.url, active: false });
           });
         });
-        li.appendChild(restoreBtn);
+        btnContainer.appendChild(restoreBtn);
 
         // Delete Button
         const deleteBtn = document.createElement('button');
-        deleteBtn.textContent = 'Delete';
+        deleteBtn.textContent = '🗑️ Delete';
+        deleteBtn.style.cursor = 'pointer';
+        deleteBtn.style.backgroundColor = '#fee2e2';
+        deleteBtn.style.color = '#991b1b';
+        deleteBtn.style.border = '1px solid #fca5a5';
         deleteBtn.addEventListener('click', async () => {
-          vaults.splice(index, 1);
-          await chrome.storage.local.set({ vaults });
-          renderSavedVaults();
+          if(confirm('Are you sure you want to delete this vault?')) {
+            vaults.splice(index, 1);
+            await chrome.storage.local.set({ vaults });
+            renderSavedVaults();
+          }
         });
-        li.appendChild(deleteBtn);
+        btnContainer.appendChild(deleteBtn);
 
+        li.appendChild(btnContainer);
         savedVaultsList.appendChild(li);
       });
     } catch (err) {
@@ -117,10 +163,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     const isPrem = await isPremiumUser();
     if (!isPrem) {
       e.target.checked = false;
-      alert("Auto-sync is a Premium feature.");
+      alert("RAM Optimization is a Premium feature.");
     } else {
-      // Implement auto-sync logic here
-      console.log("Auto-sync toggled:", e.target.checked);
+      console.log("RAM Optimization toggled:", e.target.checked);
     }
   });
 });
