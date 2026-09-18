@@ -22,7 +22,7 @@
 
 | Extension | Status | Version | CWS Link | Notes |
 |-----------|--------|---------|----------|-------|
-| *(none yet)* | — | — | — | First extension TBD |
+| ClipNote | Planning | — | — | Landing page completed, Chrome Web Store listing pending |
 
 ---
 
@@ -32,8 +32,8 @@
 
 **Active Tasks**:
 - Research Chrome Web Store for extension opportunities
-- Choose first extension to build
 - Set up development workflow
+- [x] Build Landing Page for ClipNote (ISSUE-006)
 
 ---
 
