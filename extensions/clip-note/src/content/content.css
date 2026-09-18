@@ -106,3 +106,8 @@
 
 .interactive-timestamp { cursor: pointer; color: #1a73e8; text-decoration: none; }
 .interactive-timestamp:hover { text-decoration: underline; }
+
+.clipnote-toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: #333; color: white; padding: 12px 24px; border-radius: 8px; z-index: 99999; display: none; }
+.clipnote-toast.show { display: block; }
+.clipnote-toast.error { background: #f44336; }
+.clipnote-toast.success { background: #4caf50; }

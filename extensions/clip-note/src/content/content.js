@@ -41,6 +41,26 @@
     return text.trim();
   }
 
+  function showToast(message, type = 'error') {
+    let toast = document.getElementById('clipnote-toast');
+    if (!toast) {
+      toast = document.createElement('div');
+      toast.id = 'clipnote-toast';
+      document.body.appendChild(toast);
+    }
+    toast.textContent = message;
+    toast.className = `clipnote-toast show ${type}`;
+    setTimeout(() => {
+      toast.className = toast.className.replace('show', '');
+    }, 3000);
+  }
+
+  function parseMarkdown(text) {
+    return text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+               .replace(/\*(.*?)\*/g, '<em>$1</em>')
+               .replace(/`(.*?)`/g, '<code>$1</code>');
+  }
+
   function createSidebar() {
     const sidebar = document.createElement('div');
     sidebar.id = 'clipnote-sidebar';
@@ -123,26 +143,32 @@
       try {
         const transcript = await extractTranscript(time, 180);
         if (!transcript) {
-          alert('Could not find transcript. Please ensure the transcript is open or available for this video.');
+          showToast('Could not find transcript.', 'error');
           return;
         }
 
-        let noteText = transcript;
         btn.textContent = 'Summarizing...';
 
         if (window.ai && window.ai.languageModel) {
           try {
-            const session = await window.ai.languageModel.create();
-            noteText = await session.prompt(`Summarize this transcript concisely: \n\n${transcript}`);
+            const caps = await window.ai.languageModel.capabilities();
+            if (caps && caps.available !== 'no') {
+              const session = await window.ai.languageModel.create();
+              const summary = await session.prompt(`Summarize this transcript concisely: \n\n${transcript}`);
+              addNoteToUI(time, `[Summary] ${summary}`);
+            } else {
+              showToast('AI capabilities not available.', 'error');
+            }
           } catch (e) {
-            console.error('AI Summary failed, using raw transcript.', e);
+            console.error('AI Summary failed.', e);
+            showToast('AI Summary failed.', 'error');
           }
+        } else {
+          showToast('AI API not supported.', 'error');
         }
-        
-        addNoteToUI(time, `[Summary] ${noteText}`);
       } catch (err) {
         console.error(err);
-        alert('An error occurred during summarization.');
+        showToast('An error occurred during summarization.', 'error');
       } finally {
         btn.textContent = originalText;
         btn.disabled = false;
@@ -152,9 +178,9 @@
     document.getElementById('clipnote-sync').addEventListener('click', async () => {
       const isPremium = window.ClipNoteLicense && await window.ClipNoteLicense.checkPremiumStatus();
       if (!isPremium) {
-        alert('Notion Sync requires Premium ($1). Upgrade today!');
+        showToast('Notion Sync requires Premium ($1). Upgrade today!', 'error');
       } else {
-        alert('Syncing to Notion...');
+        showToast('Syncing to Notion...', 'success');
       }
     });
   }
@@ -211,8 +237,11 @@
       }
     });
 
+    const textSpan = document.createElement('span');
+    textSpan.innerHTML = ' ' + parseMarkdown(text);
+
     note.appendChild(timeSpan);
-    note.appendChild(document.createTextNode(` ${text}`));
+    note.appendChild(textSpan);
     content.appendChild(note);
   }
 
