@@ -119,8 +119,15 @@
     syncBtn.textContent = '👑 Sync to Notion (Premium)';
     syncBtn.style.marginTop = '8px';
     
+    const screenshotBtn = document.createElement('button');
+    screenshotBtn.id = 'clipnote-screenshot';
+    screenshotBtn.className = 'clipnote-btn btn-secondary';
+    screenshotBtn.textContent = '📷 Take Screenshot';
+    screenshotBtn.style.marginTop = '8px';
+    
     controls.appendChild(input);
     controls.appendChild(addBtn);
+    controls.appendChild(screenshotBtn);
     controls.appendChild(summarizeBtn);
     controls.appendChild(syncBtn);
 
