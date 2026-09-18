@@ -1,5 +1,5 @@
 // Freemium logic
-const PREMIUM_PRICE = "$1.99/mo";
+const PREMIUM_PRICE = "$2";
 
 export async function isPremiumUser() {
   // Check premium status via backend API / local cache

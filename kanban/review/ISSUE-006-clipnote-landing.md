@@ -2,8 +2,9 @@
 id: ISSUE-006
 title: Build Landing Page for ClipNote
 assignee: marketing-seo
-status: in-progress
+status: review
 started: 2026-09-18
+completed: 2026-09-18
 ---
 
 # Task

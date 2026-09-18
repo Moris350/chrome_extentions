@@ -1,6 +1,6 @@
 // Freemium Logic
 const FREE_LIMIT = 5;
-const PREMIUM_PRICE = "$2.99/mo";
+const PREMIUM_PRICE = "$2";
 
 async function getLicenseStatus() {
   return new Promise((resolve) => {
