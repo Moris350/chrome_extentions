@@ -202,6 +202,7 @@
   }
 
   let currentVideoId = null;
+  let checkIntervalId = null;
 
   function getVideoId() {
     const urlParams = new URLSearchParams(window.location.search);
@@ -210,10 +211,11 @@
 
   function loadNotes() {
     if (!currentVideoId) return;
-    const content = document.getElementById('clipnote-content');
-    if (content) content.innerHTML = '';
     
     chrome.storage.local.get([currentVideoId], (result) => {
+      const content = document.getElementById('clipnote-content');
+      if (content) content.innerHTML = '';
+      
       const notes = result[currentVideoId] || [];
       notes.forEach(note => {
         addNoteToUIDom(note.time, note.text);
@@ -267,10 +269,12 @@
   }
 
   function injectSidebar() {
-    const checkInterval = setInterval(() => {
+    if (checkIntervalId) clearInterval(checkIntervalId);
+    checkIntervalId = setInterval(() => {
       const container = document.querySelector('ytd-watch-flexy') || document.body;
       if (container) {
-        clearInterval(checkInterval);
+        clearInterval(checkIntervalId);
+        checkIntervalId = null;
         if (!document.getElementById('clipnote-sidebar')) {
           createSidebar();
         }

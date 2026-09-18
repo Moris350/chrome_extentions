@@ -206,4 +206,20 @@ document.addEventListener('DOMContentLoaded', async () => {
       console.log("RAM Optimization toggled:", e.target.checked);
     }
   });
+
+  // Export functionality
+  const exportBtn = document.getElementById('export-btn');
+  if (exportBtn) {
+    exportBtn.addEventListener('click', async () => {
+      const result = await chrome.storage.local.get(['vaults']);
+      const vaults = result.vaults || [];
+      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(vaults, null, 2));
+      const downloadAnchorNode = document.createElement('a');
+      downloadAnchorNode.setAttribute("href", dataStr);
+      downloadAnchorNode.setAttribute("download", "tabvault-export.json");
+      document.body.appendChild(downloadAnchorNode);
+      downloadAnchorNode.click();
+      downloadAnchorNode.remove();
+    });
+  }
 });
