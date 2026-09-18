@@ -122,9 +122,12 @@ document.addEventListener('DOMContentLoaded', async () => {
         
         // Restore Button
         const restoreBtn = document.createElement('button');
-        restoreBtn.textContent = '📂 Restore';
+        restoreBtn.textContent = 'Restore';
         restoreBtn.style.marginRight = '8px';
         restoreBtn.style.cursor = 'pointer';
+        restoreBtn.style.backgroundColor = '#334155';
+        restoreBtn.style.color = 'white';
+        restoreBtn.style.border = 'none';
         restoreBtn.addEventListener('click', () => {
           v.tabs.forEach(tab => {
             chrome.tabs.create({ url: tab.url, active: false });
@@ -134,10 +137,10 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         // Delete Button
         const deleteBtn = document.createElement('button');
-        deleteBtn.textContent = '🗑️ Delete';
+        deleteBtn.textContent = 'Delete';
         deleteBtn.style.cursor = 'pointer';
-        deleteBtn.style.backgroundColor = '#fee2e2';
-        deleteBtn.style.color = '#991b1b';
+        deleteBtn.style.backgroundColor = 'transparent';
+        deleteBtn.style.color = '#ef4444';
         deleteBtn.style.border = '1px solid #fca5a5';
         deleteBtn.addEventListener('click', async () => {
           if(confirm('Are you sure you want to delete this vault?')) {
