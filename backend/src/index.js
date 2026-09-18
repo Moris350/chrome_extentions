@@ -62,8 +62,8 @@ app.post('/api/license/validate', strictLimiter, async (req, res) => {
 
   try {
     const result = await pool.query(
-      'SELECT * FROM licenses WHERE key = $1 AND status = $2',
-      [licenseKey, 'active']
+      'SELECT * FROM licenses WHERE key = $1 AND extension_id = $2 AND status = $3',
+      [licenseKey, extensionId, 'active']
     );
 
     if (result.rows.length === 0) {

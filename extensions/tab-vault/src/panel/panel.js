@@ -134,15 +134,18 @@ document.addEventListener('DOMContentLoaded', async () => {
       }
 
       vaults.forEach((v, index) => {
+        const isLocked = !premium && index >= 3;
+
         const li = document.createElement('li');
         li.style.marginBottom = '12px';
         li.style.padding = '10px';
-        li.style.backgroundColor = '#f8fafc';
+        li.style.backgroundColor = isLocked ? '#f1f5f9' : '#f8fafc';
         li.style.borderRadius = '8px';
         li.style.border = '1px solid #e2e8f0';
+        li.style.opacity = isLocked ? '0.6' : '1';
         
         const titleDiv = document.createElement('div');
-        titleDiv.textContent = `Vault (${new Date(v.date).toLocaleString()}) - ${v.tabs.length} tabs`;
+        titleDiv.textContent = `Vault (${new Date(v.date).toLocaleString()}) - ${v.tabs.length} tabs${isLocked ? ' 🔒 (Premium)' : ''}`;
         titleDiv.style.fontWeight = 'bold';
         titleDiv.style.marginBottom = '8px';
         li.appendChild(titleDiv);
@@ -153,15 +156,18 @@ document.addEventListener('DOMContentLoaded', async () => {
         const restoreBtn = document.createElement('button');
         restoreBtn.textContent = 'Restore';
         restoreBtn.style.marginRight = '8px';
-        restoreBtn.style.cursor = 'pointer';
-        restoreBtn.style.backgroundColor = '#334155';
+        restoreBtn.style.cursor = isLocked ? 'not-allowed' : 'pointer';
+        restoreBtn.style.backgroundColor = isLocked ? '#94a3b8' : '#334155';
         restoreBtn.style.color = 'white';
         restoreBtn.style.border = 'none';
-        restoreBtn.addEventListener('click', () => {
-          v.tabs.forEach(tab => {
-            chrome.tabs.create({ url: tab.url, active: false });
+        restoreBtn.disabled = isLocked;
+        if (!isLocked) {
+          restoreBtn.addEventListener('click', () => {
+            v.tabs.forEach(tab => {
+              chrome.tabs.create({ url: tab.url, active: false });
+            });
           });
-        });
+        }
         btnContainer.appendChild(restoreBtn);
 
         // Delete Button
