@@ -1,7 +1,7 @@
 ---
 title: "Implement Docker Security Best Practices (Non-root user)"
 assignee: backend-dev
-status: backlog
+status: done
 ---
 
 # Issue: Docker security best practices (non-root users)

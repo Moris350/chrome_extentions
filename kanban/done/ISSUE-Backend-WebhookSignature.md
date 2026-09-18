@@ -1,7 +1,7 @@
 ---
 title: "Implement Cryptographic Signature Validation for Webhooks"
 assignee: backend-dev
-status: backlog
+status: done
 ---
 
 # Issue: Missing cryptographic signature validation for Webhooks (LemonSqueezy)

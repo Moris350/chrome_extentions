@@ -1,7 +1,7 @@
 ---
 title: "Implement Rate Limiting for API Endpoints"
 assignee: backend-dev
-status: backlog
+status: done
 ---
 
 # Issue: Missing Rate Limiting
