@@ -55,10 +55,24 @@
     }, 3000);
   }
 
+  function escapeHTML(str) {
+    return str.replace(/[&<>"']/g, function(match) {
+      const escapeMap = {
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#39;'
+      };
+      return escapeMap[match];
+    });
+  }
+
   function parseMarkdown(text) {
-    return text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-               .replace(/\*(.*?)\*/g, '<em>$1</em>')
-               .replace(/`(.*?)`/g, '<code>$1</code>');
+    const safeText = escapeHTML(text);
+    return safeText.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                   .replace(/\*(.*?)\*/g, '<em>$1</em>')
+                   .replace(/`(.*?)`/g, '<code>$1</code>');
   }
 
   function createSidebar() {
