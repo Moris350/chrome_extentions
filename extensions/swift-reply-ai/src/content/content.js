@@ -74,7 +74,7 @@ async function showPopup(e, dialog) {
       
       const originalHTML = btn.innerHTML;
       btn.innerHTML = `Generating...`;
-      btn.style.pointerEvents = 'none';
+      popup.style.pointerEvents = 'none';
       btn.style.opacity = '0.7';
       
       try {
@@ -86,7 +86,7 @@ async function showPopup(e, dialog) {
         btn.innerHTML = `Error. Try again.`;
         setTimeout(() => {
           btn.innerHTML = originalHTML;
-          btn.style.pointerEvents = 'auto';
+          popup.style.pointerEvents = 'auto';
           btn.style.opacity = '1';
         }, 3000);
       }
