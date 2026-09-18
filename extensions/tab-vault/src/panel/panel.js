@@ -91,12 +91,20 @@ document.addEventListener('DOMContentLoaded', async () => {
         tabs: tabsToSave
       };
 
-      const result = await chrome.storage.local.get(['vaults']);
-      const vaults = result.vaults || [];
+      // Array bounds check
+      let vaults = result.vaults || [];
+      if (!Array.isArray(vaults)) vaults = [];
+      if (vaults.length > 100) vaults = vaults.slice(0, 100); // Prevent malicious local storage overload
       
       // Limit free users to 3 vaults
       if (!premium && vaults.length >= 3) {
         alert("Free users can only save up to 3 vaults. Please upgrade to Premium!");
+        return;
+      }
+
+      // Limit tabs per vault for free users
+      if (!premium && tabsToSave.length > 50) {
+        alert("Free users can only save up to 50 tabs per vault. Please upgrade to Premium!");
         return;
       }
 
@@ -112,7 +120,10 @@ document.addEventListener('DOMContentLoaded', async () => {
     try {
       const result = await chrome.storage.local.get(['vaults']);
       savedVaultsList.textContent = '';
-      const vaults = result.vaults || [];
+      let vaults = result.vaults || [];
+      if (!Array.isArray(vaults)) vaults = [];
+      if (vaults.length > 100) vaults = vaults.slice(0, 100);
+
       
       if (vaults.length === 0) {
         savedVaultsList.innerHTML = `<div style="text-align: center; padding: 20px; color: #64748b;">

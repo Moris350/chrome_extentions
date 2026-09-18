@@ -97,10 +97,18 @@ app.post('/api/webhooks/lemonsqueezy', strictLimiter, async (req, res) => {
     return res.status(401).json({ success: false, error: 'Missing signature' });
   }
 
-  const webhookSecret = process.env.LEMON_SQUEEZY_WEBHOOK_SECRET || 'default_secret';
+  const webhookSecret = process.env.LEMON_SQUEEZY_WEBHOOK_SECRET;
+  if (!webhookSecret) {
+    return res.status(500).json({ success: false, error: 'Webhook secret not configured' });
+  }
+  
+  if (!req.is('application/json') || !req.rawBody) {
+    return res.status(400).json({ success: false, error: 'Invalid content type or missing body' });
+  }
+
   try {
     const hmac = crypto.createHmac('sha256', webhookSecret);
-    const digest = Buffer.from(hmac.update(req.rawBody || '').digest('hex'), 'utf8');
+    const digest = Buffer.from(hmac.update(req.rawBody).digest('hex'), 'utf8');
     const signatureBuffer = Buffer.from(signature, 'utf8');
 
     if (digest.length !== signatureBuffer.length || !crypto.timingSafeEqual(digest, signatureBuffer)) {

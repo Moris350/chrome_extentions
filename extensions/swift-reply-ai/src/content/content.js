@@ -4,26 +4,22 @@ function injectButton() {
   dialogs.forEach((dialog) => {
     if (dialog.querySelector('.swift-reply-btn')) return;
 
-    let toolbar = dialog.querySelector('.btC') || dialog.querySelector('.aDh');
-    if (!toolbar) {
-      const sendBtn = dialog.querySelector('[role="button"][data-tooltip^="Send"]');
-      if (sendBtn) {
-        toolbar = sendBtn.closest('tr') || sendBtn.parentElement;
-      }
+    let toolbar = null;
+    let insertionPoint = null;
+    
+    const sendBtn = dialog.querySelector('[role="button"][data-tooltip^="Send"]');
+    if (sendBtn) {
+      toolbar = sendBtn.closest('tr') || sendBtn.parentElement;
+      insertionPoint = sendBtn.parentElement;
     }
 
-    if (toolbar) {
+    if (toolbar && insertionPoint) {
       const btn = document.createElement('button');
       btn.className = 'swift-reply-btn';
       btn.innerText = 'Smart Reply';
       btn.onclick = (e) => showPopup(e, dialog);
       
-      const innerToolbar = toolbar.querySelector('.gU.Up') || toolbar;
-      if (innerToolbar) {
-        innerToolbar.prepend(btn);
-      } else {
-        toolbar.prepend(btn);
-      }
+      insertionPoint.insertBefore(btn, sendBtn);
     }
   });
 }
