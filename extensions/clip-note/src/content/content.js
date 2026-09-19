@@ -306,13 +306,34 @@
     note.appendChild(textSpan);
     
     if (image) {
+      const imgContainer = document.createElement('div');
+      imgContainer.style.position = 'relative';
+      imgContainer.style.marginTop = '8px';
+
       const img = document.createElement('img');
       img.src = image;
       img.style.width = '100%';
-      img.style.marginTop = '8px';
       img.style.borderRadius = '4px';
       img.className = 'note-image';
-      note.appendChild(img);
+      
+      const downloadBtn = document.createElement('a');
+      downloadBtn.href = image;
+      downloadBtn.download = `screenshot_${time}.png`;
+      downloadBtn.textContent = '⬇️';
+      downloadBtn.style.position = 'absolute';
+      downloadBtn.style.bottom = '8px';
+      downloadBtn.style.right = '8px';
+      downloadBtn.style.background = 'rgba(0,0,0,0.7)';
+      downloadBtn.style.color = 'white';
+      downloadBtn.style.padding = '4px 8px';
+      downloadBtn.style.borderRadius = '4px';
+      downloadBtn.style.textDecoration = 'none';
+      downloadBtn.style.fontSize = '12px';
+      downloadBtn.title = 'Download Screenshot';
+      
+      imgContainer.appendChild(img);
+      imgContainer.appendChild(downloadBtn);
+      note.appendChild(imgContainer);
     }
     
     content.appendChild(note);
