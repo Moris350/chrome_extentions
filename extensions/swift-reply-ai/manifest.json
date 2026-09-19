@@ -4,12 +4,7 @@
   "version": "1.0.0",
   "description": "Smart email replies in Gmail.",
   "permissions": [
-    "activeTab",
-    "storage",
-    "scripting"
-  ],
-  "host_permissions": [
-    "*://mail.google.com/*"
+    "storage"
   ],
   "action": {
     "default_popup": "src/popup/popup.html"

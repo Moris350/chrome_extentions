@@ -5,8 +5,7 @@
   "description": "Take timestamped notes and screenshots on YouTube videos.",
   "permissions": [
     "storage",
-    "activeTab",
-    "scripting"
+    "activeTab"
   ],
   "host_permissions": [
     "*://*.youtube.com/*"

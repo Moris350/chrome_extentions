@@ -3,7 +3,7 @@
   "name": "TabVault",
   "version": "1.0.0",
   "description": "Save and organize your tabs easily.",
-  "permissions": ["tabGroups", "tabs", "storage", "sidePanel", "unlimitedStorage"],
+  "permissions": ["tabs", "storage", "sidePanel"],
   "background": {
     "service_worker": "src/background/background.js"
   },
