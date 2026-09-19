@@ -40,6 +40,9 @@ There are currently ~9 open issues in the GitHub repository (UI polish, loading 
 | Date | Decision | Rationale |
 |------|----------|-----------|
 | 2026-09-19 | Migrated to GitHub Issues | Local kanban markdown files were difficult to manage via UI. Switched to native GitHub Issues using the `github-mcp-server` / `curl`. |
+| 2026-09-19 | Fixed Issue #5 | Added dynamic viewport collision detection for the SwiftReply AI popup to prevent it from going off-screen. |
+| 2026-09-19 | Fixed ClipNote Issues #3, #4 | Isolated ClipNote sidebar CSS in a Shadow DOM and made transcript extraction robust/locale-independent. |
+| 2026-09-19 | Completed Security Audit | Fixed Issue #12 (added input validation to license API), verified all `innerHTML` usages are safe, and stripped overly broad permissions from all extension manifests. |
 | 2026-09-18 | Pivot TabVault to Local-Only | User explicitly rejected cloud storage for privacy and cost reasons. Built Export/Import JSON instead. |
 | 2026-09-18 | Freemium $1 Lifetime | Selected a $1 flat fee for Premium features across all 3 extensions. No subscriptions. |
 
