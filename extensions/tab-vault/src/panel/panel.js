@@ -31,6 +31,10 @@ document.addEventListener('DOMContentLoaded', async () => {
     try {
       currentTabsList.textContent = '';
       activeTabs = await chrome.tabs.query({ currentWindow: true });
+      if (!activeTabs || activeTabs.length === 0) {
+        currentTabsList.innerHTML = '<li style="color: #64748b; padding: 10px;">No tabs open in this window.</li>';
+        return;
+      }
       activeTabs.forEach((tab, index) => {
         const li = document.createElement('li');
         li.style.display = 'flex';
@@ -91,12 +95,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         const tab = activeTabs[cb.dataset.index];
         tabsToSave.push({ title: tab.title, url: tab.url });
       });
-
-      const vault = {
-        id: Date.now().toString(),
-        date: new Date().toISOString(),
-        tabs: tabsToSave
-      };
 
       // Get all existing keys to enforce limits
       const allItems = await chrome.storage.local.get(null);
