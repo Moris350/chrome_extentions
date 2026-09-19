@@ -12,7 +12,28 @@ const PORT = process.env.PORT || 3000;
 
 app.set('trust proxy', 1);
 app.use(helmet());
-app.use(cors());
+// Define allowed origins for CORS: landing page and Chrome extension IDs
+const allowedOrigins = [
+  process.env.LANDING_PAGE_URL || 'https://www.example.com', // Landing page domain
+  `chrome-extension://${process.env.EXTENSION_ID_TABVAULT || 'tabvault_id'}`,
+  `chrome-extension://${process.env.EXTENSION_ID_SWIFTREPLY || 'swiftreply_id'}`,
+  `chrome-extension://${process.env.EXTENSION_ID_CLIPNOTE || 'clipnote_id'}`
+];
+
+app.use(cors({
+  origin: function (origin, callback) {
+    // Allow requests with no origin (like mobile apps, curl, or server-to-server)
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.includes(origin) || process.env.NODE_ENV === 'development') {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  methods: ['GET', 'POST', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Signature'],
+  credentials: true
+}));
 app.use(express.json({
   limit: '10kb',
   verify: (req, res, buf) => {
