@@ -98,13 +98,12 @@ document.addEventListener('DOMContentLoaded', async () => {
         tabs: tabsToSave
       };
 
-      // Array bounds check
-      let vaults = result.vaults || [];
-      if (!Array.isArray(vaults)) vaults = [];
-      if (vaults.length > 100) vaults = vaults.slice(0, 100); // Prevent malicious local storage overload
+      // Get all existing keys to enforce limits
+      const allItems = await chrome.storage.local.get(null);
+      let vaultKeys = Object.keys(allItems).filter(k => k.startsWith('vault_'));
       
       // Limit free users to 3 vaults
-      if (!premium && vaults.length >= 3) {
+      if (!premium && vaultKeys.length >= 3) {
         alert("Free users can only save up to 3 vaults. Please upgrade to Premium!");
         return;
       }
@@ -115,8 +114,14 @@ document.addEventListener('DOMContentLoaded', async () => {
         return;
       }
 
-      vaults.push(vault);
-      await chrome.storage.local.set({ vaults });
+      const vaultId = Date.now().toString();
+      const vault = {
+        id: vaultId,
+        date: new Date().toISOString(),
+        tabs: tabsToSave
+      };
+
+      await chrome.storage.local.set({ [`vault_${vaultId}`]: vault });
       renderSavedVaults();
     } catch (err) {
       console.error("Error saving tabs:", err);
@@ -125,10 +130,24 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   async function renderSavedVaults() {
     try {
-      const result = await chrome.storage.local.get(['vaults']);
+      // Storage Migration: if old array exists, move it to individual keys
+      const oldResult = await chrome.storage.local.get(['vaults']);
+      if (oldResult.vaults && Array.isArray(oldResult.vaults)) {
+        const toSet = {};
+        oldResult.vaults.forEach(v => {
+          if(v.id) toSet[`vault_${v.id}`] = v;
+        });
+        await chrome.storage.local.set(toSet);
+        await chrome.storage.local.remove('vaults');
+      }
+
+      const allItems = await chrome.storage.local.get(null);
+      let vaults = Object.keys(allItems)
+        .filter(k => k.startsWith('vault_'))
+        .map(k => allItems[k])
+        .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+
       savedVaultsList.textContent = '';
-      let vaults = result.vaults || [];
-      if (!Array.isArray(vaults)) vaults = [];
       if (vaults.length > 100) vaults = vaults.slice(0, 100);
 
       const searchInput = document.getElementById('search-vaults-input');

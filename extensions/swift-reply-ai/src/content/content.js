@@ -112,7 +112,42 @@ async function showPopup(e, dialog) {
   }
   document.addEventListener('keydown', handleEsc);
 
+  // 1. Append popup to DOM to calculate its actual dimensions
   document.body.appendChild(popup);
+
+  // 2. Viewport collision detection
+  const btnRect = e.target.getBoundingClientRect();
+  const popupRect = popup.getBoundingClientRect();
+  
+  // Default position: floating above the button
+  let top = btnRect.top + window.scrollY - popupRect.height - 10;
+  let left = btnRect.left + window.scrollX;
+  
+  // Check top boundary collision
+  if (top < window.scrollY) {
+    // If it goes off-screen at the top, place it below the button
+    top = btnRect.bottom + window.scrollY + 10;
+  }
+  
+  // Check bottom boundary collision
+  if (top + popupRect.height > window.innerHeight + window.scrollY) {
+    // If it goes off-screen at the bottom, just stick it to the bottom edge
+    top = window.innerHeight + window.scrollY - popupRect.height - 10;
+  }
+  
+  // Check right boundary collision
+  if (left + popupRect.width > window.innerWidth + window.scrollX) {
+    left = window.innerWidth + window.scrollX - popupRect.width - 10;
+  }
+  
+  // Check left boundary collision
+  if (left < window.scrollX) {
+    left = window.scrollX + 10;
+  }
+  
+  // Apply calculated position
+  popup.style.top = `${top}px`;
+  popup.style.left = `${left}px`;
 }
 
 async function insertGeneratedResponse(dialog, tone) {
