@@ -1,7 +1,7 @@
 # Project Status — Chrome Extensions Business
 
-> **Last Updated**: 2026-09-18
-> **Updated By**: System (Initial Setup)
+> **Last Updated**: 2026-09-19
+> **Updated By**: Lead AI Orchestrator
 
 ---
 
@@ -10,57 +10,46 @@
 | Component | Status | Notes |
 |-----------|--------|-------|
 | Git Repository | ✅ Ready | `c:\Projects\chrome_extentions` |
-| Agent Skills | ✅ Ready | PM, Frontend, Backend, Marketing, QA |
-| Persistent Memory | ✅ Ready | Context files in `.agents/context/` |
-| Kanban System | ✅ Ready | `kanban/` with backlog/in-progress/review/done |
-| Backend Services | ⬜ Not Started | — |
-| Payment Integration | ⬜ Not Started | — |
+| Kanban System | ✅ Ready | Fully migrated to **GitHub Issues** (Moris350/chrome_extentions) |
+| Backend Services | ✅ Local Ready | Node.js + Express + Postgres (Dockerized) |
+| Payment Integration| ✅ Local Ready | Webhook logic tested & signed with HMAC |
 
 ---
 
-## 📦 Extensions
+## 📦 Extensions (All Freemium, $1 Lifetime Premium)
 
-| Extension | Status | Version | CWS Link | Notes |
-|-----------|--------|---------|----------|-------|
-| ClipNote | Planning | — | — | Landing page completed, Chrome Web Store listing pending |
+| Extension | Status | Notes |
+|-----------|--------|-------|
+| **TabVault** | Feature Complete | Privacy-first local Tab saving. Live search, export/import JSON, copy links, 50-tab limit for free tier. |
+| **SwiftReply AI** | Feature Complete | Gmail integration. Custom Tones, Auto-Language Detection, robust DOM selectors, secure payload. |
+| **ClipNote** | Feature Complete | YouTube transcript extraction. Canvas screenshot tool. Local AI (window.ai) summarization fallback. |
 
 ---
 
 ## 🎯 Current Sprint
 
-**Sprint Goal**: Set up infrastructure and choose first extension to build.
+**Sprint Goal**: Finalize cloud deployment and prepare for Chrome Web Store launch.
 
-**Active Tasks**:
-- Research Chrome Web Store for extension opportunities
-- Set up development workflow
-- [x] Build Landing Page for ClipNote (ISSUE-006)
+**Active GitHub Issues**:
+There are currently ~11 open issues in the GitHub repository (UI polish, loading spinners, CORS configuration, DB pooling).
 
 ---
 
-## 📝 Recent Decisions
+## 🧠 Recent Decisions
 
 | Date | Decision | Rationale |
 |------|----------|-----------|
-| 2026-09-18 | Freemium model chosen | Minimum friction, scalable revenue |
-| 2026-09-18 | LemonSqueezy preferred for payments | Simpler than Stripe for digital products |
-| 2026-09-18 | Manifest V3 only | V2 being deprecated, future-proof |
+| 2026-09-19 | Migrated to GitHub Issues | Local kanban markdown files were difficult to manage via UI. Switched to native GitHub Issues using the `github-mcp-server` / `curl`. |
+| 2026-09-18 | Pivot TabVault to Local-Only | User explicitly rejected cloud storage for privacy and cost reasons. Built Export/Import JSON instead. |
+| 2026-09-18 | Freemium $1 Lifetime | Selected a $1 flat fee for Premium features across all 3 extensions. No subscriptions. |
 
 ---
 
-## ⚠️ Blockers & Risks
+## 🚧 Next Steps
 
-*None currently.*
-
----
-
-## 📊 Key Metrics
-
-| Metric | Value | Target |
-|--------|-------|--------|
-| Extensions Published | 0 | 3 (first quarter) |
-| Total Installs | 0 | 1,000 |
-| Monthly Revenue | \$0 | \$500 |
-| Conversion Rate | — | 3-5% |
+1. Cloud Deployment (Supabase for Postgres, Render/Vercel for Node.js API).
+2. Clean up remaining GitHub Issues.
+3. Package and upload to Chrome Web Store.
 
 ---
 

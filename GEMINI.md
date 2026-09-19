@@ -25,41 +25,35 @@ Revenue comes from free extensions with premium features unlocked via one-time p
 |------|-----------|-------|
 | 🎯 Product Manager | `product-manager` | Research, roadmap, feature prioritization, competitive analysis |
 | 🎨 Frontend Dev | `frontend-dev` | Extension UI, Chrome APIs, manifest.json, popup/options/content scripts |
-| ⚙️ Backend Dev | `backend-dev` | APIs, payment (Stripe/LemonSqueezy), licensing, analytics backend |
+| ⚙️ Backend Dev | `backend-dev` | APIs, payment, licensing, analytics backend |
 | 📈 Marketing/SEO | `marketing-seo` | Chrome Web Store optimization, landing pages, SEO, growth |
 | 🧪 QA Engineer | `qa-engineer` | Testing, automation, cross-browser, performance, review |
 
 ---
 
-## 📋 Kanban Workflow
+## 📋 GitHub Kanban Workflow (CRITICAL)
 
-All tasks live in `kanban/` as individual Markdown files with YAML frontmatter.
-
-**Columns (directories):**
-1. `kanban/backlog/` — New tasks waiting to be picked up
-2. `kanban/in-progress/` — Assigned and being worked on
-3. `kanban/review/` — Ready for review
-4. `kanban/done/` — Completed
+All tasks and project management are handled via **GitHub Issues** and the GitHub Project Board.
+We NO LONGER use local markdown files for Kanban.
 
 **To work on a task:**
 1. Read `TASK_ONBOARDING.md` in `.agents/context/`
-2. Pick an issue from `kanban/backlog/`
-3. Update the `assignee` field in the issue's frontmatter to your role
-4. Move the file to `kanban/in-progress/`
-5. When done, move to `kanban/review/`
-6. After review passes, move to `kanban/done/`
-7. Git commit after each move
+2. Use the `github-mcp-server` tool or `curl` to fetch open issues from the repository `Moris350/chrome_extentions`.
+3. Pick an issue, and assign it to yourself (or comment that you are working on it).
+4. Do the development work on a feature branch (e.g., `feature/issue-123`).
+5. Git commit, push, and use the MCP tool to **close the issue** (update state to `closed`).
+6. Update `PROJECT_STATUS.md`.
 
 ---
 
 ## 🧠 Persistent Memory — MUST READ at Session Start
 
-At the start of every session or after Compact, **immediately read these context files**:
+At the start of every session, or immediately after a Compact, or when spawning a new SUBAGENT, **you MUST immediately read these context files**:
 
 1. **`.agents/context/PROJECT_STATUS.md`** — Current state of all extensions and what's in progress
 2. **`.agents/context/WORKFLOW.md`** — Git flow, release process, how agents coordinate
 3. **`.agents/context/TROUBLESHOOTING.md`** — Known issues and solutions
-4. **`.agents/context/TASK_ONBOARDING.md`** — How to pick up and work on tasks
+4. **`.agents/context/TASK_ONBOARDING.md`** — How to pick up and work on GitHub issues
 
 **⚠️ CRITICAL**: After completing significant work, **update `PROJECT_STATUS.md`** so the next session has current context.
 
@@ -70,12 +64,11 @@ At the start of every session or after Compact, **immediately read these context
 ```
 chrome_extentions/
 ├── .agents/skills/          # Agent role definitions
-├── .agents/context/         # Persistent memory files
+├── .agents/context/         # Persistent memory files (MUST BE READ)
 ├── extensions/              # Individual extension projects
 ├── shared/                  # Shared code/utilities across extensions
-├── kanban/                  # Task tracking (Markdown + Git)
 ├── docs/                    # Business documentation
-└── GEMINI.md                # This file (auto-loaded)
+└── GEMINI.md                # This file (auto-loaded via user rules)
 ```
 
 ---
@@ -83,8 +76,6 @@ chrome_extentions/
 ## 🔧 Development Standards
 
 - **Manifest V3** for all extensions
-- **Vanilla JS** or lightweight frameworks (no heavy dependencies)
-- **Semantic versioning** for releases
-- **Git commit messages**: `[component] type: description` (e.g., `[tab-manager] feat: add dark mode`)
+- **Vanilla JS** or lightweight frameworks
+- **Git commit messages**: `[component] type: description`
 - **One branch per extension feature**: `feature/<extension>/<feature-name>`
-- **Chrome Web Store** as primary distribution channel
