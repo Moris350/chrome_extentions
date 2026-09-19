@@ -60,6 +60,13 @@ document.addEventListener('DOMContentLoaded', async () => {
   };
   await renderCurrentTabs();
 
+  // Auto-refresh tabs list when tabs are opened, closed, or updated
+  chrome.tabs.onCreated.addListener(() => renderCurrentTabs());
+  chrome.tabs.onRemoved.addListener(() => renderCurrentTabs());
+  chrome.tabs.onUpdated.addListener((tabId, changeInfo) => {
+    if (changeInfo.title || changeInfo.url) renderCurrentTabs();
+  });
+
   const selectAllCb = document.getElementById('select-all-cb');
   if (selectAllCb) {
     selectAllCb.addEventListener('change', (e) => {
