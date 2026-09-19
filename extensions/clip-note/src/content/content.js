@@ -6,14 +6,31 @@
     
     if (segments.length === 0) {
       // Try to open transcript if it's closed
-      const expandBtns = document.querySelectorAll('button');
-      for (const btn of expandBtns) {
-        if (btn.textContent.toLowerCase().includes('show transcript')) {
-          btn.click();
-          break;
-        }
+      // Use component tags for locale independence (Issue #4)
+      const transcriptSectionBtn = document.querySelector('ytd-video-description-transcript-section-renderer button');
+      if (transcriptSectionBtn) {
+        transcriptSectionBtn.click();
       }
-      await new Promise(r => setTimeout(r, 1500));
+
+      // Replace setTimeout with MutationObserver (Issue #4)
+      await new Promise(resolve => {
+        const observer = new MutationObserver((mutations, obs) => {
+          const segs = document.querySelectorAll('ytd-transcript-segment-renderer');
+          if (segs.length > 0) {
+            obs.disconnect();
+            resolve();
+          }
+        });
+        
+        observer.observe(document.body, { childList: true, subtree: true });
+        
+        // Timeout fallback
+        setTimeout(() => {
+          observer.disconnect();
+          resolve();
+        }, 3000);
+      });
+      
       segments = Array.from(document.querySelectorAll('ytd-transcript-segment-renderer'));
     }
 

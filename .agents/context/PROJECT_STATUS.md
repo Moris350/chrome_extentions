@@ -31,7 +31,7 @@
 **Sprint Goal**: Finalize cloud deployment and prepare for Chrome Web Store launch.
 
 **Active GitHub Issues**:
-There are currently ~11 open issues in the GitHub repository (UI polish, loading spinners, CORS configuration, DB pooling).
+There are currently ~9 open issues in the GitHub repository (UI polish, loading spinners). Fixed CORS configuration and DB pooling issues.
 
 ---
 
