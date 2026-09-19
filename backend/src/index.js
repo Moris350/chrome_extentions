@@ -64,6 +64,9 @@ const pool = new Pool({
   user: process.env.DB_USER,
   password: process.env.DB_PASSWORD,
   database: process.env.DB_NAME,
+  max: parseInt(process.env.DB_POOL_MAX || '20', 10), // Set maximum number of clients in the pool
+  idleTimeoutMillis: parseInt(process.env.DB_IDLE_TIMEOUT || '30000', 10), // How long a client is allowed to remain idle before being closed
+  connectionTimeoutMillis: parseInt(process.env.DB_CONN_TIMEOUT || '2000', 10), // How long to wait before timing out when connecting a new client
 });
 
 pool.on('error', (err, client) => {

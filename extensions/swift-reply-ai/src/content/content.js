@@ -35,9 +35,7 @@ async function showPopup(e, dialog) {
   const popup = document.createElement('div');
   popup.className = 'swift-reply-popup';
   
-  const rect = e.target.getBoundingClientRect();
-  popup.style.top = `${rect.top + window.scrollY - 150}px`;
-  popup.style.left = `${rect.left + window.scrollX}px`;
+  // Positioning will be handled after appending to DOM to allow for viewport collision detection
 
   const tones = [
     { name: 'Agree', premium: false },
